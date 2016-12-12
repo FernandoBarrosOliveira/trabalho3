@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">trabalho3</string>
+    <string name="navegation_title">MovieDB</string>
+    <string name="filme_popular">Filmes Populares</string>
+    <string name="filme_acessados">FIlmes Acessados</string>
+    <string name="title_activity_info_filme">InfoFilmeActivity</string>
+</resources>
