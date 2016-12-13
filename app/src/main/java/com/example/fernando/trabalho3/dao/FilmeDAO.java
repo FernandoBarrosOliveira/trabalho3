@@ -31,7 +31,7 @@ public class FilmeDAO {
         contentValues.put(dbHelper.FILMES_COLUMN_NOME, filme.getNome() );
         contentValues.put(dbHelper.FILMES_COLUMN_SINOPSE, filme.getSinopse() );
         contentValues.put(dbHelper.FILMES_COLUMN_URLIMAGEM, filme.getImagem());
-        contentValues.put(dbHelper.FILMES_COLUMN_QTD_ACESSO, filme.getQuantidadeAcesso());
+        contentValues.put(dbHelper.FILMES_COLUMN_QTD_ACESSO, filme.getQuantidadeAcesso()+1);
 
         long id = db.insert(dbHelper.TABLE_FILMES, null, contentValues);
         db.close();
@@ -51,10 +51,10 @@ public class FilmeDAO {
     public void atualizaQtdAcesso(Filme filme) {
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(dbHelper.FILMES_COLUMN_QTD_ACESSO, filme.getQuantidadeAcesso());
-        db.update(dbHelper.TABLE_FILMES,contentValues, dbHelper.FILMES_COLUMN_NOME + "=?" +
-                new String[] {String.valueOf(filme.getQuantidadeAcesso())}, null);
+        String sql = "UPDATE " + dbHelper.TABLE_FILMES + " SET " + dbHelper.FILMES_COLUMN_QTD_ACESSO +
+                " = " + dbHelper.FILMES_COLUMN_QTD_ACESSO + " +1 WHERE " + dbHelper.FILMES_COLUMN_NOME + " = \"" + filme.getNome() +"\"";
+
+        db.execSQL(sql);
         db.close();
     }
 
@@ -62,7 +62,7 @@ public class FilmeDAO {
 
         DbHelper dbHelper = new DbHelper(this.context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String sql = "SELECT * FROM " + dbHelper.TABLE_FILMES + " ORDER BY " +dbHelper.FILMES_COLUMN_QTD_ACESSO;
+        String sql = "SELECT * FROM " + dbHelper.TABLE_FILMES + " ORDER BY " +dbHelper.FILMES_COLUMN_QTD_ACESSO +" DESC";
 
         Cursor cursor = db.rawQuery(sql, null);
 

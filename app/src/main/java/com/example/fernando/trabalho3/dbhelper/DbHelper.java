@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String DATABASE_NAME = "filmes";
 
@@ -35,8 +35,8 @@ public class DbHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_FILMES = "CREATE TABLE " + TABLE_FILMES +
                 "(" + FILMES_COLUMN_ID + "INTEGER PRIMARY KEY, " +
                 FILMES_COLUMN_NOME + " TEXT NOT NULL, "+
-                FILMES_COLUMN_SINOPSE + "TEXT NOT NULL, "+
-                FILMES_COLUMN_URLIMAGEM + "TEXT NOT NULL, "+
+                FILMES_COLUMN_SINOPSE + " TEXT NOT NULL, "+
+                FILMES_COLUMN_URLIMAGEM + " TEXT NOT NULL, "+
                 FILMES_COLUMN_QTD_ACESSO + " INTEGER );";
         db.execSQL(CREATE_TABLE_FILMES);
 
@@ -47,5 +47,6 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILMES);
+        this.onCreate(db);
     }
 }
