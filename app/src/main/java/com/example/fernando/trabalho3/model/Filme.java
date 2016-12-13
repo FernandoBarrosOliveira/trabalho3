@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 
 public class Filme implements Serializable {
+
     private String nome;
     private String sinopse;
     private String imagem;

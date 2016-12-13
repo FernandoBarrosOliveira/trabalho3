@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.fernando.trabalho3.dao.FilmeDAO;
+import com.example.fernando.trabalho3.dbhelper.DbHelper;
 import com.example.fernando.trabalho3.model.Filme;
 import com.squareup.picasso.Picasso;
 
@@ -25,12 +27,23 @@ public class FilmeDetalherActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Filme filme = (Filme) intent.getSerializableExtra("FILME");
         montaExibicao(filme);
+        salvarFilme(filme);
+
+    }
+
+    private void salvarFilme(Filme filme) {
+        FilmeDAO filmeDAO = new FilmeDAO(this);
+        if(filmeDAO.filmeExiste(filme)){
+            filmeDAO.atualizaQtdAcesso(filme);
+        }else{
+            filmeDAO.insertFilme(filme);
+        }
 
     }
 
     private void montaExibicao(Filme filme){
         txtNomeFilme.setText(filme.getNome());
-        txtNomeFilme.setText(filme.getSinopse());
+        txtSinopse.setText(filme.getSinopse());
         Picasso.with(this)
                 .load("http://image.tmdb.org/t/p/w500/" +filme.getImagem())
                 .placeholder(R.mipmap.ic_launcher)

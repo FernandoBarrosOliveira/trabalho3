@@ -1,8 +1,14 @@
 package com.example.fernando.trabalho3.asynctask;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.fernando.trabalho3.R;
+import com.example.fernando.trabalho3.adapter.ListaFilmesAdapter;
 import com.example.fernando.trabalho3.model.Filme;
 
 import org.json.JSONArray;
@@ -23,10 +29,28 @@ import java.util.Locale;
  * Created by fernando on 11/12/16.
  */
 
-public class FilmeAsyncTask extends AsyncTask<String, Void, String> {
+public class FilmeAsyncTask extends AsyncTask<String, Void, Void> {
+    private List<Filme> listaFilme = new ArrayList<>();
+    private ProgressDialog processDialog;
+    private Activity mainActivity;
+
+
+
+    public FilmeAsyncTask (Activity activity){
+        this.mainActivity = activity;
+    }
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected void onPreExecute() {
+        super.onPreExecute();
+        processDialog = new ProgressDialog(mainActivity);
+        processDialog.setMessage("Carregando filmes");
+        processDialog.setCancelable(false);
+        processDialog.show();
+    }
+
+    @Override
+    protected Void doInBackground(String... strings) {
 
         String urlString = strings[0];
         HttpURLConnection urlConnection = null;
@@ -54,7 +78,17 @@ public class FilmeAsyncTask extends AsyncTask<String, Void, String> {
                 stringBuilder.append(line);
             }
             reader.close();
-            return stringBuilder.toString();
+
+            try {
+                JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                listaFilme = jsonToListaFilme(jsonArray);
+                Log.d("onPost",jsonObject.toString());
+            }catch (JSONException e){
+                Log.e("JSOn","Error",e); e.printStackTrace();
+            }
+
+            return null;
 
 
         }catch (IOException e){
@@ -67,28 +101,30 @@ public class FilmeAsyncTask extends AsyncTask<String, Void, String> {
             }
         }
 
-
     }
 
     @Override
-    protected void onPostExecute(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            //JSONArray jsonArray = jsonObject.getJSONArray("results");
-            jsonToListaFilme(jsonObject);
-            Log.d("onPost",jsonObject.toString());
-        }catch (JSONException e){
-            Log.e("JSOn","Error",e); e.printStackTrace();
+    protected void onPostExecute(Void result) {
+        super.onPostExecute(result);
+        if(processDialog.isShowing()){
+            processDialog.dismiss();
         }
-        super.onPostExecute(s);
+
+        ListaFilmesAdapter listaFilmesAdapter = new ListaFilmesAdapter(listaFilme, mainActivity);
+        RecyclerView recyclerView = (RecyclerView) mainActivity.findViewById(R.id.recycler);
+        recyclerView.setAdapter(listaFilmesAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mainActivity));
+
     }
 
-    private List<Filme> jsonToListaFilme (JSONObject jsonObject){
+    private List<Filme> jsonToListaFilme (JSONArray jsonArray){
         List<Filme> listaFilme = new ArrayList<>();
 
-        for(int i=0;i < jsonObject.length();i++){
-            Filme filme = new Filme();
+        for(int i=0;i < jsonArray.length();i++){
+
             try{
+                Filme filme = new Filme();
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
                 filme.setImagem(jsonObject.getString("poster_path"));
                 filme.setNome(jsonObject.getString("original_title"));
                 filme.setSinopse(jsonObject.getString("overview"));
