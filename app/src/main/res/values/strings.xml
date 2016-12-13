@@ -4,4 +4,5 @@
     <string name="filme_popular">Filmes Populares</string>
     <string name="filme_acessados">FIlmes Acessados</string>
     <string name="title_activity_info_filme">InfoFilmeActivity</string>
+    <string name="sinopse">Sinopse</string>
 </resources>

@@ -24,6 +24,7 @@ import java.util.Locale;
  */
 
 public class FilmeAsyncTask extends AsyncTask<String, Void, String> {
+
     @Override
     protected String doInBackground(String... strings) {
 
@@ -38,6 +39,8 @@ public class FilmeAsyncTask extends AsyncTask<String, Void, String> {
             urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
+
+
             StringBuffer buffer = new StringBuffer();
 
             if(inputStream == null){

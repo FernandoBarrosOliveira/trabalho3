@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.fernando.trabalho3.R;
+import com.example.fernando.trabalho3.interfaces.OnItemFilmeClickListener;
 import com.example.fernando.trabalho3.model.Filme;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 
 public class ListaFilmesAdapter extends RecyclerView.Adapter<ListaFilmesAdapter.ListaFilmeViewHolder> {
     private List<Filme> listaFilmes = new ArrayList<>();
+    private OnItemFilmeClickListener onItemFilmeClickListener;
 
     @Override
     public ListaFilmeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -29,9 +31,17 @@ public class ListaFilmesAdapter extends RecyclerView.Adapter<ListaFilmesAdapter.
 
     @Override
     public void onBindViewHolder(ListaFilmeViewHolder holder, int position) {
+        final Filme filme = listaFilmes.get(position);
+        View.OnClickListener listener = new View.OnClickListener(){
 
+            @Override
+            public void onClick(View view) {
+                onItemFilmeClickListener.OnItemClick(filme);
+            }
+        };
 
-
+        holder.txtFilme.setOnClickListener(listener);
+        holder.imgFilme.setOnClickListener(listener);
     }
 
     @Override
@@ -47,5 +57,13 @@ public class ListaFilmesAdapter extends RecyclerView.Adapter<ListaFilmesAdapter.
             imgFilme = (ImageView) itemView.findViewById(R.id.item_img_filme);
             txtFilme = (TextView) itemView.findViewById(R.id.item_txt_filme);
         }
+    }
+
+    public OnItemFilmeClickListener getOnItemFilmeClickListener() {
+        return onItemFilmeClickListener;
+    }
+
+    public void setOnItemFilmeClickListener(OnItemFilmeClickListener onItemFilmeClickListener) {
+        this.onItemFilmeClickListener = onItemFilmeClickListener;
     }
 }
